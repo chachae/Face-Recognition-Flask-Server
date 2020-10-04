@@ -251,6 +251,33 @@ def load_embeddings():
     return embedding_dict
 
 
+def identify_face_1v1(embedding1, embedding2):
+    try:
+        min_distance = 100
+        # Compute euclidean distance between current embedding and the embeddings from the 'embeddings' folder
+        distance = np.linalg.norm(embedding1 - embedding2)
+
+        print('distance : ' + str(distance))
+
+        if distance < min_distance:
+            min_distance = distance
+
+        if min_distance <= 1.1:
+            result = "the distance is " + str(min_distance)
+
+            return result
+
+        else:
+            result = "Not in the database, the distance is " + str(min_distance)
+
+            return result
+
+    except Exception as e:
+        print(str(e))
+
+        return str(e)
+
+
 def identify_face(embedding, embedding_dict):
     """Compares its received embedding with the embeddings stored in the 'embeddings' folder  by
     minimum euclidean distance (norm), the embedding with the least euclidean distance is the predicted class.
