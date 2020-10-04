@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 
-import tensorflow as tf
-import numpy as np
 import glob
 import os
-from tensorflow.python.platform import gfile
-from lib.facenet import get_model_filenames
-from lib.mtcnn.detect_face import detect_face  # face detection
-from lib.facenet import load_image
-from scipy.misc import imresize, imsave
 from collections import defaultdict
+
+import numpy as np
+import tensorflow as tf
 from flask import flash
+from scipy.misc import imresize, imsave
+from tensorflow.python.platform import gfile
+
+from lib.facenet import get_model_filenames
+from lib.facenet import load_image
+from lib.mtcnn.detect_face import detect_face  # face detection
 
 
 def allowed_file(filename, allowed_set):
@@ -140,52 +142,6 @@ def get_face(img, pnet, rnet, onet, image_size):
             return face_img
     else:
         return None
-
-
-def get_faces_live(img, pnet, rnet, onet, image_size):
-    """Detects multiple human faces live from web camera frame.
-
-    Args:
-        img: web camera frame.
-        pnet: proposal net, first stage of the MTCNN face detection.
-        rnet: refinement net, second stage of the MTCNN face detection.
-        onet: output net,  third stage of the MTCNN face detection.
-        image_size: (int) required square image size.
-
-     Returns:
-           faces: List containing the cropped human faces.
-           rects: List containing the rectangle coordinates to be drawn around each human face.
-    """
-    # Default constants from the FaceNet repository implementation of the MTCNN
-    minsize = 20
-    threshold = [0.6, 0.7, 0.7]
-    factor = 0.709
-    margin = 44
-    input_image_size = image_size
-
-    faces = []
-    rects = []
-    img_size = np.asarray(img.shape)[0:2]
-    bounding_boxes, _ = detect_face(
-        img=img, minsize=minsize, pnet=pnet, rnet=rnet,
-        onet=onet, threshold=threshold, factor=factor
-    )
-    # If human face(s) is/are detected:
-    if not len(bounding_boxes) == 0:
-        for face in bounding_boxes:
-            if face[4] > 0.50:
-                det = np.squeeze(face[0:4])
-                bb = np.zeros(4, dtype=np.int32)
-                bb[0] = np.maximum(det[0] - margin / 2, 0)
-                bb[1] = np.maximum(det[1] - margin / 2, 0)
-                bb[2] = np.minimum(det[2] + margin / 2, img_size[1])
-                bb[3] = np.minimum(det[3] + margin / 2, img_size[0])
-                cropped = img[bb[1]:bb[3], bb[0]:bb[2], :]
-                resized = imresize(arr=cropped, size=(input_image_size, input_image_size), mode='RGB')
-                faces.append(resized)
-                rects.append([bb[0], bb[1], bb[2], bb[3]])
-
-    return faces, rects
 
 
 def forward_pass(img, session, images_placeholder, phase_train_placeholder, embeddings, image_size):

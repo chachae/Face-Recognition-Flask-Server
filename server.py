@@ -24,7 +24,7 @@ embeddings_path = os.path.join(APP_ROOT, 'embeddings')
 allowed_set = {'png', 'jpg', 'jpeg'}
 
 
-@app.route("/")
+@app.route("/", methods=['GET'])
 def index_page():
     return render_template(template_name_or_list="compare.html")
 
