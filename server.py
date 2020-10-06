@@ -54,8 +54,9 @@ def cal(file):
         # 存在人脸
         if img is not None:
             # 保存人脸
-            filename = str(time.time()) + '.' + file.filename.rsplit('.', 1)[1].lower()
+            filename = str(int(round(time.time() * 1000))) + '.' + file.filename.rsplit('.', 1)[1].lower()
             save_image(img=img, filename=filename, uploads_path=uploads_path)
+            # 获取当前人脸的 embedding
             embedding = forward_pass(
                 img=img,
                 session=facenet_persistent_session,
@@ -72,8 +73,6 @@ def cal(file):
 
 
 if __name__ == '__main__':
-    """Server and FaceNet Tensorflow configuration."""
-
     # 加载预训练模型
     model_path = 'model/20180408-102900.pb'
     facenet_model = load_model(model_path)
