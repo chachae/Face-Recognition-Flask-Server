@@ -100,7 +100,7 @@ def save_embedding(embedding, filename, embeddings_path):
 
 def load_embeddings():
     embedding_dict = defaultdict()
-    for embedding in glob.iglob(pathname='embeddings/*.npy'):
+    for embedding in glob.iglob(pathname='app/_apis/embeddings/*.npy'):
         name = remove_file_extension(embedding)
         dict_embedding = np.load(embedding)
         embedding_dict[name] = dict_embedding
