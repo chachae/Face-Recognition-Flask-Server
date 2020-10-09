@@ -6,40 +6,39 @@
 </p>
 <br/>
 
-本服务基于 <a href="https://github.com/pallets/flask">Flask</a> 框架构建，使用 MTCNN 实现人脸检测，利用 FacNet 计算人脸距离向量，只做一件事情——人脸相似度对比，对外只暴露一个接口，上传两张图片即可完成相似度计算，将持续更新。
-
---------------------------------------------------------------------------------
-
-# 配置和启动
-
-```shell
-pip3 install -r requirements_cpu.txt 
-```
-```shell
-python3 server.py
-```
+本服务基于 <a href="https://github.com/pallets/flask">Flask</a> 框架构建，使用 MTCNN 实现人脸检测和人脸对齐，利用 FacNet 计算人脸128距离向量，使用欧拉公式计算两个目标向量距离，本服务只做一件事情——人脸相似度对比，对外只暴露一个接口，上传两张图片即可完成相似度计算，将持续更新。
 
 --------------------------------------------------------------------------------
 
 # 配置要求
 
-本服务<strong>不支持</strong> Tensorflow 2.0，并且 python 版本必须高于3，可以根据 <code>requirements_cpu.txt</code> 进行安装配置。
-
 * Python 3+
 * Tensorflow < 2.0
+* Unix（Gunicorn 目前不能运行于 Windows）
+
+--------------------------------------------------------------------------------
+
+# 配置和启动
+
+使用 pip 安装相关依赖模块并启动项目
+
+```shell
+pip3 install -r requirements_cpu.txt 
+gunicorn -c gun.py manage:app
+```
 
 --------------------------------------------------------------------------------
 
 # 相关链接
 
-FaceNet 预训练模型下载地址：<a href="https://drive.google.com/file/d/1R77HmFADxe87GmoLwzfgMu_HY0IhcyBz/view">20180408-102900.zip</a>，下载后放置于<code>model</code>文件夹下。
+FaceNet 官方预训练模型下载地址：<a href="https://drive.google.com/file/d/1R77HmFADxe87GmoLwzfgMu_HY0IhcyBz/view">20180408-102900.zip</a>，下载后放置于<code>model</code>文件夹下，使用亚洲人脸图库训练的模型对亚洲人脸识别效果会更友好，具体网上有相关资源可供下载，有能力可自行训练。
 
 --------------------------------------------------------------------------------
 
 # TODO List
 
-* 提高 Flask 的并发性能
-* 提供模型训练
+- [x] 提高 Flask 的并发性能 
+- [ ] 提供模型训练
 
 --------------------------------------------------------------------------------
 
